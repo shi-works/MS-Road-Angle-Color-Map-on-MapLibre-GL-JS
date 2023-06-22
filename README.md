@@ -1,6 +1,6 @@
 # MS-Road-Angle-Color-Map-on-MapLibre-GL-JS
 ## Public Website
-https://shi-works.github.io/MS-Road-on-MapLibre-GL-JS/
+https://shi-works.github.io/MS-Road-Angle-Color-Map-on-MapLibre-GL-JS/
 
 ## Data
 ### PMTiles形式
