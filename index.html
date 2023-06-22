@@ -61,8 +61,8 @@
       background: rgba(255, 255, 255, 0.9);
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
       border-radius: 5px;
-      width: 250px;
-      height: 250px;
+      width: 150px;
+      height: 50px;
       overflow: scroll;
     }
 
@@ -367,6 +367,20 @@
       map.showTileBoundaries = true;
 
     });
+
+    // ポップアップ表示
+    map.on('click', 'pmtiles-road-1', (e) => {
+      var lng = e.lngLat.lng;
+      var lat = e.lngLat.lat;
+      var angle = e.features[0].properties['angle'];
+      new maplibregl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(
+          'angle: ' + angle
+        )
+        .addTo(map);
+    });
+
   </script>
 </body>
 
