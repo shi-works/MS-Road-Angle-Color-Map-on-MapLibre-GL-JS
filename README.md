@@ -1,4 +1,4 @@
-# MS-Road-Angle-Color-on-MapLibre-GL-JS
+# MS-Road-Angle-Color-Map-on-MapLibre-GL-JS
 ## Public Website
 https://shi-works.github.io/MS-Road-on-MapLibre-GL-JS/
 
