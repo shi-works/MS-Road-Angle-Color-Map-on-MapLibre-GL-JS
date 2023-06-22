@@ -253,7 +253,7 @@
             337.5, 'rgb(0, 76, 0)',   // 暗い緑色
             352.5, 'rgb(153, 153, 0)', // 暗い黄色
           ],
-          "line-width": 4,
+          "line-width": 5,
           'line-blur': 0.8
         }
       });
@@ -295,7 +295,7 @@
             337.5, 'rgb(0, 128, 0)',
             352.5, 'rgb(255, 255, 0)',
           ],
-          "line-width": 2,
+          "line-width": 3,
           'line-blur': 0.4
         }
       });
@@ -337,7 +337,7 @@
             337.5, 'rgb(179, 209, 179)',   // 明るい緑色
             352.5, 'rgb(255, 255, 229)', // 明るい黄色
           ],
-          "line-width": 1,
+          "line-width": 1.5,
         }
       });
 
@@ -349,7 +349,7 @@
         map.setPaintProperty(
           'pmtiles-road-1',
           'line-width',
-          parseFloat(e.target.value) * 6
+          parseFloat(e.target.value) * 5
         );
         map.setPaintProperty(
           'pmtiles-road-2',
@@ -359,7 +359,7 @@
         map.setPaintProperty(
           'pmtiles-road-3',
           'line-width',
-          parseFloat(e.target.value) * 1
+          parseFloat(e.target.value) * 1.5
         );
         linesliderWidthValue.textContent = e.target.value + '倍';
       });
