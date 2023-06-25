@@ -95,15 +95,14 @@
 
 <body>
   <div id="map"></div>
-  <!--
   <div id="select-pmtiles">
     <label><b>データセット<br>(RoadDetections)</b></label><br>
     <select id="pmtiles" onchange="SelectPMTiles()">
-      <option value="Japan-Full">Japan</option>
-      <option value="_USA">UnitedStates</option>
+      <option value="Japan-Full_split_angle">Japan</option>
+      <option value="Europe-Full_Ukraine_split_angle">Ukraine</option>
+      <option value="Europe-Full_France_split_angle">France</option>
     </select>
   </div>
-  -->
   <div class="map-overlay top">
     <div class="map-overlay-inner">
       <label>道路データ 線の太さ倍率: <span id="line-slider-width-value">1倍</span></label>
@@ -119,8 +118,8 @@
 
     const map = new maplibregl.Map({
       container: 'map',
-      style: './dark.json',
-      // style: 'https://tile2.openstreetmap.jp/styles/osm-bright/style.json',
+      // style: './dark.json',
+      style: 'https://tile2.openstreetmap.jp/styles/osm-bright/style.json',
       zoom: 13.45,
       minZoom: 1,
       maxZoom: 23,
@@ -200,7 +199,6 @@
         orthosliderOpactiyValue.textContent = e.target.value + '%';
       });
 
-      // let PMTiles_URL = "https://xs489works.xsrv.jp/pmtiles-data/MS_RoadDetections/Japan-Full.pmtiles";
       let PMTiles_URL = "https://xs489works.xsrv.jp/pmtiles-data/MS_RoadDetections/Japan-Full_split_angle.pmtiles";
 
       const p = new pmtiles.PMTiles(PMTiles_URL)
@@ -368,6 +366,7 @@
 
     });
 
+    /*
     // ポップアップ表示
     map.on('click', 'pmtiles-road-1', (e) => {
       var lng = e.lngLat.lng;
@@ -380,7 +379,208 @@
         )
         .addTo(map);
     });
+    */
 
+    // マップの中心座標を設定
+    function getMapCenter(CenterText) {
+      const CenterTable = {
+        // キー：国、値：緯度、経度
+        'Japan-Full_split_angle': [139.7671248, 35.6812362],
+        'Europe-Full_Ukraine_split_angle': [30.5234, 50.450],
+        'Europe-Full_France_split_angle': [2.2950275, 48.8737917],
+      };
+      return CenterTable[CenterText];
+    }
+
+    // PMTiles切り替え表示
+    function SelectPMTiles() {
+      var BasePMTilesName = document.getElementById('pmtiles').value;
+
+      // 一旦、ソースとレイヤ削除
+      map.removeLayer('pmtiles-road-1');
+      map.removeLayer('pmtiles-road-2');
+      map.removeLayer('pmtiles-road-3');
+      map.removeSource('pmtiles-road');
+
+      // 国名を引数として関数を呼び出し、返された値を変数に代入
+      const locationInfo = getMapCenter(BasePMTilesName);
+
+      // 値を緯度、経度にそれぞれ代入
+      const longitude = locationInfo[0];
+      const latitude = locationInfo[1];
+
+      // マップの中心座標へ遷移
+      map.flyTo({
+        center: [longitude, latitude],
+        zoom: 14
+      });
+
+      // MSベクトルタイル
+      let PMTiles_URL = "https://xs489works.xsrv.jp/pmtiles-data/MS_RoadDetections/" + BasePMTilesName + ".pmtiles";
+
+      const p = new pmtiles.PMTiles(PMTiles_URL)
+      p.getMetadata().then((res) => console.log(res));
+
+      protocol.add(p);
+      // MSベクトルタイル
+      map.addSource("pmtiles-road", {
+        type: "vector",
+        url: "pmtiles://" + PMTiles_URL,
+        attribution: '<a href="https://github.com/microsoft/RoadDetections">© Microsoft RoadDetectionsを加工して作成</a>',
+        generateId: true
+      });
+
+      BasePMTilesName = BasePMTilesName.replace("-", "")
+
+      map.addLayer({
+        'id': 'pmtiles-road-1',
+        'source': 'pmtiles-road',
+        'source-layer': BasePMTilesName,
+        "minzoom": 8,
+        "maxzoom": 23,
+        'type': 'line',
+        'paint': {
+          "line-color": [
+            'step',
+            ['get', 'angle'],
+            'rgb(153, 153, 0)',    // 暗い黄色
+            7.5, 'rgb(153, 99, 0)',  // 暗い橙色
+            22.5, 'rgb(153, 0, 0)',   // 暗い赤色
+            37.5, 'rgb(76, 0, 76)', // 暗い紫色
+            52.5, 'rgb(0, 0, 153)',   // 暗い青色
+            67.5, 'rgb(0, 76, 0)',   // 暗い緑色
+            82.5, 'rgb(153, 153, 0)', // 暗い黄色
+            97.5, 'rgb(153, 99, 0)',  // 暗い橙色
+            112.5, 'rgb(153, 0, 0)',   // 暗い赤色
+            127.5, 'rgb(76, 0, 76)', // 暗い紫色
+            142.5, 'rgb(0, 0, 153)',   // 暗い青色
+            157.5, 'rgb(0, 76, 0)',   // 暗い緑色
+            172.5, 'rgb(153, 153, 0)', // 暗い黄色
+            187.5, 'rgb(153, 99, 0)',  // 暗い橙色
+            202.5, 'rgb(153, 0, 0)',   // 暗い赤色
+            217.5, 'rgb(76, 0, 76)', // 暗い紫色
+            232.5, 'rgb(0, 0, 153)',   // 暗い青色
+            247.5, 'rgb(0, 76, 0)',   // 暗い緑色
+            262.5, 'rgb(153, 153, 0)', // 暗い黄色
+            277.5, 'rgb(153, 99, 0)',  // 暗い橙色
+            292.5, 'rgb(153, 0, 0)',   // 暗い赤色
+            307.5, 'rgb(76, 0, 76)', // 暗い紫色
+            322.5, 'rgb(0, 0, 153)',   // 暗い青色
+            337.5, 'rgb(0, 76, 0)',   // 暗い緑色
+            352.5, 'rgb(153, 153, 0)', // 暗い黄色
+          ],
+          "line-width": 5,
+          'line-blur': 0.8
+        }
+      });
+
+      map.addLayer({
+        'id': 'pmtiles-road-2',
+        'source': 'pmtiles-road',
+        'source-layer': BasePMTilesName,
+        "minzoom": 8,
+        "maxzoom": 23,
+        'type': 'line',
+        'paint': {
+          "line-color": [
+            'step',
+            ['get', 'angle'],
+            'rgb(255, 255, 0)',    // 黄色
+            7.5, 'rgb(255, 165, 0)',  // 橙色
+            22.5, 'rgb(255, 0, 0)',   // 赤色
+            37.5, 'rgb(128, 0, 128)', // 紫色
+            52.5, 'rgb(0, 0, 255)',   // 青色
+            67.5, 'rgb(0, 128, 0)',   // 緑色
+            82.5, 'rgb(255, 255, 0)', // 黄色
+            97.5, 'rgb(255, 165, 0)', // 以降、色のサイクルを繰り返す...
+            112.5, 'rgb(255, 0, 0)',
+            127.5, 'rgb(128, 0, 128)',
+            142.5, 'rgb(0, 0, 255)',
+            157.5, 'rgb(0, 128, 0)',
+            172.5, 'rgb(255, 255, 0)',
+            187.5, 'rgb(255, 165, 0)',
+            202.5, 'rgb(255, 0, 0)',
+            217.5, 'rgb(128, 0, 128)',
+            232.5, 'rgb(0, 0, 255)',
+            247.5, 'rgb(0, 128, 0)',
+            262.5, 'rgb(255, 255, 0)',
+            277.5, 'rgb(255, 165, 0)',
+            292.5, 'rgb(255, 0, 0)',
+            307.5, 'rgb(128, 0, 128)',
+            322.5, 'rgb(0, 0, 255)',
+            337.5, 'rgb(0, 128, 0)',
+            352.5, 'rgb(255, 255, 0)',
+          ],
+          "line-width": 3,
+          'line-blur': 0.4
+        }
+      });
+
+      map.addLayer({
+        'id': 'pmtiles-road-3',
+        'source': 'pmtiles-road',
+        'source-layer': BasePMTilesName,
+        "minzoom": 8,
+        "maxzoom": 23,
+        'type': 'line',
+        'paint': {
+          "line-color": [
+            'step',
+            ['get', 'angle'],
+            'rgb(255, 255, 229)',    // 明るい黄色
+            7.5, 'rgb(255, 209, 179)',  // 明るい橙色
+            22.5, 'rgb(255, 179, 179)',   // 明るい赤色
+            37.5, 'rgb(194, 179, 194)', // 明るい紫色
+            52.5, 'rgb(179, 179, 255)',   // 明るい青色
+            67.5, 'rgb(179, 209, 179)',   // 明るい緑色
+            82.5, 'rgb(255, 255, 229)', // 明るい黄色
+            97.5, 'rgb(255, 209, 179)',  // 明るい橙色
+            112.5, 'rgb(255, 179, 179)',   // 明るい赤色
+            127.5, 'rgb(194, 179, 194)', // 明るい紫色
+            142.5, 'rgb(179, 179, 255)',   // 明るい青色
+            157.5, 'rgb(179, 209, 179)',   // 明るい緑色
+            172.5, 'rgb(255, 255, 229)', // 明るい黄色
+            187.5, 'rgb(255, 209, 179)',  // 明るい橙色
+            202.5, 'rgb(255, 179, 179)',   // 明るい赤色
+            217.5, 'rgb(194, 179, 194)', // 明るい紫色
+            232.5, 'rgb(179, 179, 255)',   // 明るい青色
+            247.5, 'rgb(179, 209, 179)',   // 明るい緑色
+            262.5, 'rgb(255, 255, 229)', // 明るい黄色
+            277.5, 'rgb(255, 209, 179)',  // 明るい橙色
+            292.5, 'rgb(255, 179, 179)',   // 明るい赤色
+            307.5, 'rgb(194, 179, 194)', // 明るい紫色
+            322.5, 'rgb(179, 179, 255)',   // 明るい青色
+            337.5, 'rgb(179, 209, 179)',   // 明るい緑色
+            352.5, 'rgb(255, 255, 229)', // 明るい黄色
+          ],
+          "line-width": 1.5,
+        }
+      });
+
+      // スライダーで道路の線の太さを制御
+      const linesliderWidth = document.getElementById('line-slider-width');
+      const linesliderWidthValue = document.getElementById('line-slider-width-value');
+
+      linesliderWidth.addEventListener('input', (e) => {
+        map.setPaintProperty(
+          'pmtiles-road-1',
+          'line-width',
+          parseFloat(e.target.value) * 5
+        );
+        map.setPaintProperty(
+          'pmtiles-road-2',
+          'line-width',
+          parseFloat(e.target.value) * 3
+        );
+        map.setPaintProperty(
+          'pmtiles-road-3',
+          'line-width',
+          parseFloat(e.target.value) * 1.5
+        );
+        linesliderWidthValue.textContent = e.target.value + '倍';
+      });
+
+    }
   </script>
 </body>
 
